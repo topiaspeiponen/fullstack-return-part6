@@ -5,23 +5,37 @@ const notificationSlice = createSlice({
     initialState: null,
     reducers: {
         createNotification(state, action) {
-            const text = action.payload
-            return text
+            const text = action.payload.text
+            return {
+              content: text,
+              id: action.payload.id
+            }
         },
         removeNotification(state, action) {
-          return null
+          if (action.payload === state.id) {
+            return null
+          } else {
+            return state
+          }
         }
     }
 
 })
   
-export const { createNotification, removeNotification } = notificationSlice.actions
+export const { createNotification, addTimeoutID, removeNotification } = notificationSlice.actions
+
+const getId = () => (100000 * Math.random()).toFixed(0)
 
 export const setNotification = (text, timeout) => {
-  return async dispatch => {
-    dispatch(createNotification(text))
+  return async (dispatch) => {
+    const newId = getId()
+
+    dispatch(createNotification({
+      text: text, 
+      id: newId
+    }))
     setTimeout(() => {
-      dispatch(removeNotification())
+      dispatch(removeNotification(newId))
     }, (timeout * 1000))
   }
 }
