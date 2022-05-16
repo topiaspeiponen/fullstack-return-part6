@@ -5,7 +5,10 @@ import { createNotification, removeNotification } from '../reducers/notification
 const AnecdoteList = () => {
     const anecdotes = useSelector(state => {
         console.log('state ', state)
-        const anecdotes = [...state.anecdotes]
+        let anecdotes = [...state.anecdotes]
+        if (state.filter) {
+            anecdotes = anecdotes.filter(anecdote => anecdote.content.includes(state.filter))
+        }
         const sortedAnecdotes = anecdotes.sort((anecdoteA, anecdoteB) => anecdoteB.votes - anecdoteA.votes)
         return sortedAnecdotes
       })
